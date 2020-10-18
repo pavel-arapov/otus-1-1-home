@@ -19,6 +19,7 @@ public class Character : MonoBehaviour
     {
         Pistol,
         Bat,
+        Fist,
     }
 
     Animator animator;
@@ -48,11 +49,14 @@ public class Character : MonoBehaviour
     [ContextMenu("Attack")]
     void AttackEnemy()
     {
-        var character = target.GetComponentInParent<Character>();
+        if (isDead())
+            return;
+        Character character = target.GetComponentInParent<Character>();
         if (character.isDead())
             return;
         switch (weapon) {
             case Weapon.Bat:
+            case Weapon.Fist:
                 state = State.RunningToEnemy;
                 break;
             case Weapon.Pistol:
@@ -111,7 +115,15 @@ public class Character : MonoBehaviour
                 break;
 
             case State.BeginAttack:
-                animator.SetTrigger("MeleeAttack");
+                switch (weapon)
+                {
+                    case Weapon.Bat:
+                        animator.SetTrigger("MeleeAttack");
+                        break;
+                    case Weapon.Fist:
+                        animator.SetTrigger("FistAttack");
+                        break;
+                }
                 state = State.Attack;
                 break;
 
